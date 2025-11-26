@@ -1,33 +1,59 @@
-import {User} from '../models/user.model.js';
+import { User } from "../models/user.model.js";
 
 const registerUser = async (req, res) => {
-    try {
-        const {username, password, email} = req.body;
+  try {
+    const { username, password, email } = req.body;
 
-        //basic validation
-        if(!username || !password || !email){
-            return res.status(400).json({message: "All fields are required"});
-        }
-        //check if user exists
-        const existingUser = await User.findOne({email: email.toLowerCase()});
-        if(existingUser){
-            return  res.status(409).json({message: "User already exists"});
-        }
-
-        //create new user
-        const newUser = new User({
-            username,
-
-            password,
-            email: email.toLowerCase(),
-            loggedIn: false,
-        });
-        await newUser.save();
-        res.status(201).json({message: "User registered successfully"});
-
-    }catch (error) {
-        res.status(500).json({message: "Server Error: " + error.message});
+    if (!username || !password || !email) {
+      return res.status(400).json({ message: "All fields are required" });
     }
+
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser) {
+      return res.status(409).json({ message: "User already exists" });
+    }
+
+    const newUser = new User({
+      username,
+      password,
+      email: email.toLowerCase(),
+      loggedIn: false,
+    });
+
+    await newUser.save();
+
+    res.status(201).json({ message: "User registered successfully" });
+
+  } catch (error) {
+    res.status(500).json({ message: "Server Error: " + error.message });
+  }
+};
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+    if (!password) {
+      return res.status(400).json({ message: "Password is required" });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    return res.status(200).json({ message: "Login successful" });
+
+  } catch (error) {
+    return res.status(500).json({ message: "Server Error: " + error.message });
+  }
 };
 
-export {registerUser};
+
+export { registerUser,loginUser};
