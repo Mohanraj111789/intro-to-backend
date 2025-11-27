@@ -49,4 +49,14 @@ const updatePosts = async(req,res) =>{
 
 };
 
-export { createPost, Posts, updatePosts };
+const deletePost = async(req,res) =>{
+    try{
+        const post = await Post.findByIdAndDelete(req.params.id);
+        res.status(200).json({message:"Post deleted successfully"});
+    }catch(error)
+    {
+        res.status(500).json({ message: "Server Error: " + error.message });
+    }
+}
+
+export { createPost, Posts, updatePosts ,deletePost};
