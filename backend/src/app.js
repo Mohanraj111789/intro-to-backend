@@ -1,5 +1,6 @@
 import express from "express";
 import userRoutes from "./routes/user.route.js";
+import postRoutes from "./routes/post.route.js";
 
 const app = express();
 
@@ -8,6 +9,7 @@ app.use(express.json());
 
 // mount all user endpoints
 app.use("/api/users", userRoutes);
+app.use("/api/posts",postRoutes);
 
 // test route
 app.get("/", (req, res) => {
