@@ -20,7 +20,7 @@ const createPost = async (req, res) => {
   }
 };
 
-const getPosts = async (req, res) => {
+const Posts = async (req, res) => {
   try {
     const posts = await Post.find();
 
@@ -34,4 +34,19 @@ const getPosts = async (req, res) => {
   }
 };
 
-export { createPost, getPosts };
+const updatePosts = async(req,res) =>{
+    try{
+        if(Object.keys(req.body) === 0)
+        {
+            res.status(400).json({message:"No data provide for Update"});
+        }
+        const post = await Post.findByIdAndUpdate(req.params.id,req.body,{new:true});
+
+    }catch(error)
+    {
+        res.status(500).json({ message: "Server Error: " + error.message });
+    }
+
+};
+
+export { createPost, Posts, updatePosts };
